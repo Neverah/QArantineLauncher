@@ -1,8 +1,0 @@
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\QArantineLauncher.pdb
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\QArantine.exe
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\QArantine.runtimeconfig.json
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\av_libglesv2.dll
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\libHarfBuzzSharp.dll
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\libSkiaSharp.dll
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\QArantine.pdb
-C:\Dev\projectDT\QArantineLauncher\bin\Release\net8.0\win-x64\publish\QArantineLauncher.exe

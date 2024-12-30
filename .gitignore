@@ -1,0 +1,34 @@
+# Ignorar carpetas bin y obj generadas por el compilador
+bin/
+obj/
+
+# Framework output
+**/TestsOutput/**
+*Log.html
+*GUIWindowSettings.json
+*ProfMeasurements*.json
+
+# Launcher saved data
+**/LauncherData/**
+
+# BuildVersions
+**/BuildVersions/**
+
+!**/BuildVersions/QArantine
+!**/BuildVersions/QArantine/ExternalBins/
+!**/BuildVersions/QArantine/ExternalBins/**
+
+# ReleaseVersions (el Launcher sí se sube)
+**/ReleaseVersions/**
+
+!**/ReleaseVersions/QArantine
+!**/ReleaseVersions/QArantine/ExternalBins/
+!**/ReleaseVersions/QArantine/ExternalBins/**
+
+!**/ReleaseVersions/QArantineLauncher
+!**/ReleaseVersions/QArantineLauncher/**
+**/ReleaseVersions/**/TestsOutput/**
+**/ReleaseVersions/**/*Log.html
+**/ReleaseVersions/QArantineLauncher/**/GUIWindowSettings.json
+**/ReleaseVersions/QArantineLauncher/**/ProfMeasurements*.json
+**/ReleaseVersions/QArantineLauncher/**/LauncherData/**
