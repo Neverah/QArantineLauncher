@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
+        x:Class="QArantineLauncher.Code.LauncherGUI.Views.MessageBox"
+        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Title="MessageBox" Width="350" Height="150">
+
+    <Window.Background>
+        <SolidColorBrush Color="Black"/>
+    </Window.Background>
+
+    <Grid RowDefinitions="Auto,*">
+        <TextBlock Name="MessageTextBlock" TextWrapping="Wrap" Margin="10" Foreground="LightGray" />
+        <Button Content="OK" HorizontalAlignment="Center" Width="100" Margin="10" Grid.Row="1" Click="OkButton_Click" />
+    </Grid>
+</Window>

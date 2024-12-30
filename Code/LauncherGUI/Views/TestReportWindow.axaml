@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:QArantineLauncher.Code.LauncherGUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:QArantineLauncher.Code.LauncherGUI.Models"
+        x:Class="QArantineLauncher.Code.LauncherGUI.Views.TestReportWindow"
+        x:DataType="vm:TestReportWindowViewModel"
+        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Title="TestReport" Width="750" Height="725">
+
+    <Window.Background>
+        <SolidColorBrush Color="Black"/>
+    </Window.Background>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!-- Secciones de errores -->
+            <ItemsControl ItemsSource="{Binding ExecutionErrorSections}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <!-- Tipo de error como encabezado de la sección -->
+                            <TextBlock Text="{Binding ErrorID}" FontWeight="Bold" FontSize="16" Foreground="#DC4545" Margin="10,10,5,5" />
+
+                            <!-- Lista de errores dentro de la sección -->
+                            <ListBox ItemsSource="{Binding ExecutionErrors}" BorderThickness="0" Margin="0,0,0,5">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical" Margin="5">
+                                            <!-- ID del error -->
+                                            <TextBlock Text="{Binding TestCaseName}" FontWeight="Bold" FontSize="15" Foreground="White" Margin="0,0,0,5" />
+
+                                            <!-- Campos clave-valor en una sola línea -->
+                                            <ItemsControl ItemsSource="{Binding ExtraFieldsList}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0" >
+                                                            <TextBlock Text="{Binding Key}" Foreground="LightGray" FontWeight="SemiBold" />
+                                                            <TextBlock Text=": " Foreground="LightGray" FontWeight="SemiBold" />
+                                                            <TextBlock Text="{Binding Value}" Foreground="LightGray" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

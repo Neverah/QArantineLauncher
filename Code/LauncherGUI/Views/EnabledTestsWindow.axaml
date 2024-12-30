@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="QArantineLauncher.Code.LauncherGUI.Views.EnabledTestsWindow"
+        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Title="ConfigureEnabledTests" Width="800" Height="900">
+
+    <Window.Background>
+        <SolidColorBrush Color="Black"/>
+    </Window.Background>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" x:Name="SearchTextBox" Watermark="Search..." Margin="0,0,10,0"/>
+            <Button Grid.Column="1" Content="Enable All" Click="EnableAllButton_Click" Width="100" Margin="0,0,10,0"/>
+            <Button Grid.Column="2" Content="Disable All" Click="DisableAllButton_Click" Width="100"/>
+        </Grid>
+
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" Margin="10">
+            <StackPanel x:Name="TestsListPanel"/>
+        </ScrollViewer>
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
+            <Button Content="Save" Click="SaveButton_Click" Width="100" Margin="5"/>
+            <Button Content="Cancel" Click="CancelButton_Click" Width="100" Margin="5"/>
+        </StackPanel>
+    </DockPanel>
+
+</Window>
