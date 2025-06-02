@@ -41,6 +41,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Models
         public string OutputDirectoryPath { get => _outputDirectoryPath; set { _outputDirectoryPath = value; RaisePropertyChanged(nameof(OutputDirectoryPath)); } }
         public IBrush SuccessForegroundColor { get => _successForegroundColor; private set { _successForegroundColor = value; RaisePropertyChanged(nameof(SuccessForegroundColor)); } }
         public ICommand? OpenLogCommand { get; private set; }
+        public ICommand? OpenTestOutputDirectoryCommand { get; private set; }
         public ICommand? OpenReportWindowCommand { get; private set; }
 
         public GUITestResult(TestResult testResult)
@@ -59,6 +60,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Models
             _successForegroundColor = GetColorFromSuccessState(testResult.Success);
 
             OpenLogCommand = new RelayCommand(OpenLog);
+            OpenTestOutputDirectoryCommand = new RelayCommand(OpenOutputDirectory);
             OpenReportWindowCommand =  new RelayCommand(OpenReportWindow);
         }
 
@@ -71,6 +73,11 @@ namespace QArantineLauncher.Code.LauncherGUI.Models
         private async void OpenLog()
         {
             if (!FileUtils.OpenFile(_logFilePath)) await MessageBox.Show($"The file '{_logFilePath}' doesn't exist", LogManager.LogLevel.Error);
+        }
+
+        private async void OpenOutputDirectory()
+        {
+            if (!FileUtils.OpenDirectory(_outputDirectoryPath)) await MessageBox.Show($"The output directory '{_outputDirectoryPath}' doesn't exist", LogManager.LogLevel.Error);
         }
 
         private void OpenReportWindow()

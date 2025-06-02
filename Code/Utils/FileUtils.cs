@@ -29,13 +29,10 @@ namespace QArantineLauncher.Code.Utils
             }
         }
 
-        public static void CopyFilesMatchingRegex(string sourceDir, string destinationDir, List<string> regexPatterns)
+        public static void CopyFilesMatchingRegex(string sourceDir, string destinationDir, List<string> regexPatterns, List<string>? ignoreRegexPatterns = null)
         {
-            List<Regex> regexPatternObjects = [];
-            foreach (string regexPattern in regexPatterns)
-            {
-                regexPatternObjects.Add(new Regex(regexPattern.Replace("\\", "/").Replace("/", "[\\\\/]+"), RegexOptions.IgnoreCase));
-            }
+            List<Regex> regexPatternObjects = [.. regexPatterns.Select(pattern => new Regex(pattern.Replace("\\", "/").Replace("/", "[\\\\/]+"), RegexOptions.IgnoreCase))];
+            List<Regex> ignorePatternObjects = ignoreRegexPatterns != null ? [.. ignoreRegexPatterns.Where(pattern => !string.IsNullOrEmpty(pattern)).Select(pattern => new Regex(pattern.Replace("\\", "/").Replace("/", "[\\\\/]+"), RegexOptions.IgnoreCase))] : [];
 
             Directory.CreateDirectory(destinationDir);
 
@@ -45,7 +42,12 @@ namespace QArantineLauncher.Code.Utils
             {
                 string relativePath = Path.GetRelativePath(sourceDir, file);
 
-                foreach(Regex regexPattern in regexPatternObjects)
+                if (ignorePatternObjects.Any(pattern => pattern.IsMatch(relativePath)))
+                {
+                    continue;
+                }
+
+                foreach (Regex regexPattern in regexPatternObjects)
                 {
                     if (regexPattern.IsMatch(relativePath))
                     {

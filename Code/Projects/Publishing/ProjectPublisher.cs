@@ -11,13 +11,15 @@ namespace QArantineLauncher.Code.Projects.Publishing
     (
         string projectRootPath,
         string publishingOutputPath,
-        string additionalCopyFiles
+        string additionalCopyFiles,
+        string ignoredCopyFiles
     )
     {
         public static readonly string ExpectedBasePath = "bin/Release/net8.0/win-x64/publish";
         public string ProjectRootPath { get; set; } = projectRootPath;
         public string PublishingOutputPath { get; set; } = publishingOutputPath;
         public string AdditionalCopyFiles { get; set; } = additionalCopyFiles;
+        public string IgnoredCopyFiles { get; set; } = ignoredCopyFiles;
         public bool IsPublishing = false;
         public bool WasLastProcessSuccesfull = false;
         public event EventHandler? PublishingStarted;
@@ -27,7 +29,7 @@ namespace QArantineLauncher.Code.Projects.Publishing
         public readonly Mutex LogMutex = new();
         private Process? currentProcess;
 
-        public async Task StartPublishing()
+        public async Task StartPublishing(bool useTrimming)
         {
             IsPublishing = true;
 
@@ -38,7 +40,7 @@ namespace QArantineLauncher.Code.Projects.Publishing
             ProcessStartInfo startInfo = new()
             {
                 FileName = "dotnet",
-                Arguments = "publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:CustomIdentifier=QArantineProjectPublisher",
+                Arguments = "publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true /p:CustomIdentifier=QArantineProjectPublisher" + (useTrimming ? " /p:PublishTrimmed=true /p:TrimMode=copyused" : ""),
                 WorkingDirectory = ProjectRootPath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -85,7 +87,7 @@ namespace QArantineLauncher.Code.Projects.Publishing
                 {
                     if (Directory.Exists(PublishingOutputPath)) Directory.Delete(PublishingOutputPath, true);
                     FileUtils.CopyDirectory(Path.Combine(ProjectRootPath, ExpectedBasePath), PublishingOutputPath);
-                    FileUtils.CopyFilesMatchingRegex(ProjectRootPath, PublishingOutputPath, SplitRegexPatterns(AdditionalCopyFiles));
+                    FileUtils.CopyFilesMatchingRegex(ProjectRootPath, PublishingOutputPath, SplitRegexPatterns(AdditionalCopyFiles), SplitRegexPatterns(IgnoredCopyFiles));
                     AddLogLineWithTimestamp($"Files copied to the output directory", LogColorsDictionary.LogColorMap[LogColorsDictionary.LogLevel.Debug]);
                 }
                 catch (Exception e)

@@ -35,6 +35,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
             BuildOutputPathTextBox = this.FindControl<TextBox>("BuildOutputPathTextBox");
             PublishingOutputPathTextBox = this.FindControl<TextBox>("PublishingOutputPathTextBox");
             AdditionalCopyFilesTextBox = this.FindControl<TextBox>("AdditionalCopyFilesTextBox");
+            IgnoredCopyFilesTextBox = this.FindControl<TextBox>("IgnoredCopyFilesTextBox");
         }
 
         private void InitializeComponent()
@@ -64,6 +65,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
             string? buildOutputPath = BuildOutputPathTextBox.Text;
             string? publishingOutputPath = PublishingOutputPathTextBox.Text;
             string? additionalCopyFiles = AdditionalCopyFilesTextBox.Text;
+            string? ignoredCopyFiles = IgnoredCopyFilesTextBox.Text;
 
             if (string.IsNullOrWhiteSpace(name) || 
                 string.IsNullOrWhiteSpace(projectRootPath) || 
@@ -84,6 +86,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
                 buildOutputPath ?? "",
                 publishingOutputPath ?? "",
                 additionalCopyFiles ?? "",
+                ignoredCopyFiles ?? "",
                 runParams ?? ""
             );
 

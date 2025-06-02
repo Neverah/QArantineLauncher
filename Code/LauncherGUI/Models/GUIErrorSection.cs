@@ -26,6 +26,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Models
         public string Category { get => _category; set { _category = value; RaisePropertyChanged(nameof(Category)); } }
         public ObservableCollection<TestError> ExecutionErrors { get => _executionErrors; set { _executionErrors = value; RaisePropertyChanged(nameof(ExecutionErrors)); } }
         public ICommand? OpenLogCommand { get; private set; }
+        public ICommand? OpenTestOutputDirectoryCommand { get; private set; }
 
         private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {

@@ -11,13 +11,15 @@ namespace QArantineLauncher.Code.Projects.Building
     (
         string projectRootPath,
         string buildOutputPath,
-        string additionalCopyFiles
+        string additionalCopyFiles,
+        string ignoredCopyFiles
     )
     {
         public static readonly string ExpectedBasePath = "bin/Debug/net8.0";
         public string ProjectRootPath { get; set; } = projectRootPath;
         public string BuildOutputPath { get; set; } = buildOutputPath;
         public string AdditionalCopyFiles { get; set; } = additionalCopyFiles;
+        public string IgnoredCopyFiles { get; set; } = ignoredCopyFiles;
         public bool IsBuilding = false;
         public bool WasLastProcessSuccesfull = false;
         public event EventHandler? BuildStarted;
@@ -85,7 +87,7 @@ namespace QArantineLauncher.Code.Projects.Building
                 {
                     if (Directory.Exists(BuildOutputPath)) Directory.Delete(BuildOutputPath, true);
                     FileUtils.CopyDirectory(Path.Combine(ProjectRootPath, ExpectedBasePath), BuildOutputPath);
-                    FileUtils.CopyFilesMatchingRegex(ProjectRootPath, BuildOutputPath, SplitRegexPatterns(AdditionalCopyFiles));
+                    FileUtils.CopyFilesMatchingRegex(ProjectRootPath, BuildOutputPath, SplitRegexPatterns(AdditionalCopyFiles), SplitRegexPatterns(IgnoredCopyFiles));
                     AddLogLineWithTimestamp($"Files copied to the output directory", LogColorsDictionary.LogColorMap[LogColorsDictionary.LogLevel.Debug]);
                 }
                 catch (Exception e)

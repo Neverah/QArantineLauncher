@@ -38,6 +38,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
             BuildOutputPathTextBox = this.FindControl<TextBox>("BuildOutputPathTextBox");
             PublishingOutputPathTextBox = this.FindControl<TextBox>("PublishingOutputPathTextBox");
             AdditionalCopyFilesTextBox = this.FindControl<TextBox>("AdditionalCopyFilesTextBox");
+            IgnoredCopyFilesTextBox = this.FindControl<TextBox>("IgnoredCopyFilesTextBox");
         }
 
         public ProjectUpdateWindow(Project project) : this()
@@ -53,6 +54,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
             BuildOutputPathTextBox.Text = project.BuildOutputPath ?? "";
             PublishingOutputPathTextBox.Text = project.PublishingOutputPath ?? "";
             AdditionalCopyFilesTextBox.Text = project.AdditionalCopyFiles ?? "";
+            IgnoredCopyFilesTextBox.Text = project.IgnoredCopyFiles ?? "";
         }
 
         private void InitializeComponent()
@@ -81,6 +83,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
             string? buildOutputPath = BuildOutputPathTextBox.Text;
             string? publishingOutputPath = PublishingOutputPathTextBox.Text;
             string? additionalCopyFiles = AdditionalCopyFilesTextBox.Text;
+            string? ignoredCopyFiles = IgnoredCopyFilesTextBox.Text;
 
             if (string.IsNullOrWhiteSpace(projectRootPath) || 
                 string.IsNullOrWhiteSpace(exeFileName) || 
@@ -101,6 +104,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Views
                 _updatingProject.BuildOutputPath = buildOutputPath ?? "";
                 _updatingProject.PublishingOutputPath = publishingOutputPath ?? "";
                 _updatingProject.AdditionalCopyFiles = additionalCopyFiles ?? "";
+                _updatingProject.IgnoredCopyFiles = ignoredCopyFiles ?? "";
             }
 
             ProjectManager.Instance.SaveExistentProjects();

@@ -1,21 +1,17 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
 
+using QArantineLauncher.Code.JsonContexts;
+
 namespace QArantineLauncher.Code.Projects
 {
     public class ProjectManager
     {
         public ObservableCollection<Project> ExistentProjects { get; set; }
-        private string SavedProjectsFilePath = "LauncherData/ProjectsData/SavedProjects.json";
-        private JsonSerializerOptions _serializerOptions;
+        private readonly string SavedProjectsFilePath = "LauncherData/ProjectsData/SavedProjects.json";
         private static ProjectManager? _instance;
         private ProjectManager()
         {
-            _serializerOptions = new()
-            {
-                WriteIndented = true
-            };
-
             ExistentProjects = LoadSavedProjects();
         }
 
@@ -35,7 +31,7 @@ namespace QArantineLauncher.Code.Projects
 
         public void SaveExistentProjects()
         {
-            string jsonString = JsonSerializer.Serialize(ExistentProjects, _serializerOptions);
+            string jsonString = JsonSerializer.Serialize([.. ExistentProjects], ProjectJsonContext.Default.ListProject);
 
             string? directoryPath = Path.GetDirectoryName(SavedProjectsFilePath);
             if (directoryPath != null) Directory.CreateDirectory(directoryPath);
@@ -49,7 +45,7 @@ namespace QArantineLauncher.Code.Projects
             {
                 string jsonString = File.ReadAllText(SavedProjectsFilePath);
 
-                List<Project>? projects = JsonSerializer.Deserialize<List<Project>>(jsonString);
+                List<Project>? projects = JsonSerializer.Deserialize(jsonString, ProjectJsonContext.Default.ListProject);
                 if (projects != null) return [.. projects];
             }
 

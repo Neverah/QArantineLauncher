@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using AngleSharp.Common;
 
 using QArantineLauncher.Code.LauncherGUI.Models;
 using QArantine.Code.Test;
-using AngleSharp.Common;
-using System.Text.Json;
+using QArantineLauncher.Code.JsonContexts;
 
 namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 {
@@ -35,7 +36,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             try
             {
                 string jsonContent = File.ReadAllText(path);
-                return JsonSerializer.Deserialize<ObservableCollection<TestError>>(jsonContent) ?? [];
+                return JsonSerializer.Deserialize(jsonContent, TestReportJsonContext.Default.ObservableCollectionTestError) ?? [];
             }
             catch (Exception ex)
             {
@@ -54,12 +55,13 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
                                       [.. g]
                                   ))
                                   .ToList();
-            return new ObservableCollection<GUIErrorSection>(groupedErrors);
+            return [.. groupedErrors];
         }
         
         private void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }

@@ -1,5 +1,7 @@
 using QArantine.Code.Test;
 using System.Text.Json;
+
+using QArantineLauncher.Code.JsonContexts;
 using QArantineLauncher.Code.LauncherGUI.Views;
 
 namespace QArantineLauncher.Code.Projects.Testing
@@ -23,7 +25,6 @@ namespace QArantineLauncher.Code.Projects.Testing
         public event EventHandler? TestResultDataAdded;
         public event EventHandler? TestResultsDataClear;
         public readonly Mutex ResultsDataListMutex = new();
-        private readonly JsonSerializerOptions JSO = new() { WriteIndented = true };
         private readonly Project _ownerProject = ownerProject;
         private readonly Dictionary<string, bool> _enabledTests = [];
         private readonly string _disabledTestsFilePath = Path.Combine(testsPath, "DisabledTests.json");
@@ -94,12 +95,7 @@ namespace QArantineLauncher.Code.Projects.Testing
             if (!Directory.Exists(TestsPath)) return [];
 
             string[] files = Directory.GetFiles(TestsPath, "*.cs", SearchOption.AllDirectories);
-
-            List<string> testNames = [];
-            foreach (string file in files)
-                testNames.Add(GetTestRelativePathFromFullPath(file));
-
-            return [.. testNames];
+            return files.Select(GetTestRelativePathFromFullPath).ToArray();
         }
 
         private string GetTestRelativePathFromFullPath(string testFullPath)
@@ -158,7 +154,7 @@ namespace QArantineLauncher.Code.Projects.Testing
             try
             {
                 string jsonContent = File.ReadAllText(path);
-                return JsonSerializer.Deserialize<TestResult>(jsonContent);
+                return JsonSerializer.Deserialize<TestResult>(jsonContent, ProjectTesterJsonContext.Default.TestResult);
             }
             catch (Exception ex)
             {
@@ -185,7 +181,7 @@ namespace QArantineLauncher.Code.Projects.Testing
         public void SaveDisabledTestsToJson()
         {
             List<string> disabledTests = _enabledTests.Where(kv => !kv.Value).Select(kv => kv.Key).ToList();
-            string json = JsonSerializer.Serialize(disabledTests, JSO);
+            string json = JsonSerializer.Serialize(disabledTests, ProjectTesterJsonContext.Default.ListString);
             File.WriteAllText(_disabledTestsFilePath, json);
         }
 
@@ -194,7 +190,7 @@ namespace QArantineLauncher.Code.Projects.Testing
             if (File.Exists(_disabledTestsFilePath))
             {
                 string json = File.ReadAllText(_disabledTestsFilePath);
-                var disabledTests = JsonSerializer.Deserialize<List<string>>(json);
+                var disabledTests = JsonSerializer.Deserialize(json, ProjectTesterJsonContext.Default.ListString);
                 if (disabledTests != null)
                 {
                     foreach (string testName in disabledTests) 

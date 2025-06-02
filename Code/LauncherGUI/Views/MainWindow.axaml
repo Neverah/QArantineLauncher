@@ -197,8 +197,11 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -233,7 +236,7 @@
                                         </Button.Content>
                                     </Button>
                                             
-                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" x:Name="CleaningLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5" Padding="0" Background="#111" >
+                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" x:Name="CleaningLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5,5,0,5" Padding="0" Background="#111" >
                                         <ItemsControl ItemsSource="{Binding CleaningLogLines}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -253,8 +256,10 @@
                             </Border>
                         </DockPanel>
 
+                        <GridSplitter Grid.Row="0" Grid.Column="1" Width="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
                         <!-- Build section -->
-                        <DockPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                        <DockPanel Grid.Row="0" Grid.Column="2" Margin="5">
                             <Border Padding="5">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -280,7 +285,7 @@
                                         </Button.Content>
                                     </Button>
                                             
-                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" x:Name="BuildLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5" Padding="0" Background="#111" >
+                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" x:Name="BuildLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,5,0,5" Padding="0" Background="#111" >
                                         <ItemsControl ItemsSource="{Binding BuildLogLines}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -300,13 +305,16 @@
                             </Border>
                         </DockPanel>
 
+                        <GridSplitter Grid.Row="0" Grid.Column="3" Width="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
                         <!-- Publishing section -->
-                        <DockPanel Grid.Row="0" Grid.Column="2" Margin="5">
+                        <DockPanel Grid.Row="0" Grid.Column="4" Margin="5">
                             <Border Padding="5">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
@@ -318,7 +326,10 @@
                                     <CheckBox Grid.Row="0" Grid.Column="0" Content="Publish" ToolTip.Tip="Enable/Disable Publishing Step" IsChecked="{Binding IsPublishingEnabled}"
                                         HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                                    <Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Toggle Publishing Auto Scroll" Command="{Binding TogglePublishingAutoScrollCommand}" 
+                                    <CheckBox Grid.Row="0" Grid.Column="2" Content="Trimming" ToolTip.Tip="Enable/Disable Trimming" IsChecked="{Binding IsTrimmingEnabled}"
+                                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                                    <Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Toggle Publishing Auto Scroll" Command="{Binding TogglePublishingAutoScrollCommand}" 
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Width="NaN">
                                         <Button.Content>
                                             <Viewbox>
@@ -327,7 +338,7 @@
                                         </Button.Content>
                                     </Button>
                                             
-                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="3" x:Name="PublishingLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5" Padding="0" Background="#111" >
+                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" x:Name="PublishingLogScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,5,0,5" Padding="0" Background="#111" >
                                         <ItemsControl ItemsSource="{Binding PublishingLogLines}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -347,8 +358,10 @@
                             </Border>
                         </DockPanel>
 
+                        <GridSplitter Grid.Row="0" Grid.Column="5" Width="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
                         <!-- Testing section -->
-                        <DockPanel Grid.Row="0" Grid.Column="3" Margin="5">
+                        <DockPanel Grid.Row="0" Grid.Column="6" Margin="5">
                             <Border Padding="5">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -384,7 +397,7 @@
                                         </Button.Content>
                                     </Button>
 
-                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" x:Name="TestingResultsScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="5" Padding="0" Background="#111" >
+                                    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" x:Name="TestingResultsScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,5,5,5" Padding="0" Background="#111" >
                                         <ListBox ItemsSource="{Binding TestingResultsData}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
@@ -394,6 +407,7 @@
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="Auto"/>
                                                                 <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="Auto"/>
@@ -401,7 +415,16 @@
 
                                                             <TextBlock Grid.Column="0" Text="{Binding TestName}" Margin="2" FontFamily="Calibri" FontSize="14" FontWeight="Bold" Foreground="{Binding SuccessForegroundColor}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                                         
-                                                            <Button Grid.Column="1" ToolTip.Tip="Open Test Log File" Command="{Binding OpenLogCommand}" 
+                                                            <Button Grid.Column="1" ToolTip.Tip="Open Test Report Window" Command="{Binding OpenReportWindowCommand}" 
+                                                                HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Height="30">
+                                                                <Button.Content>
+                                                                    <Viewbox>
+                                                                        <Image Source="/Assets/LauncherGUI/Icons/Report.png" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                                    </Viewbox>
+                                                                </Button.Content>
+                                                            </Button>
+
+                                                            <Button Grid.Column="2" ToolTip.Tip="Open Test Log File" Command="{Binding OpenLogCommand}" 
                                                                 HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Height="30">
                                                                 <Button.Content>
                                                                     <Viewbox>
@@ -410,14 +433,15 @@
                                                                 </Button.Content>
                                                             </Button>
 
-                                                            <Button Grid.Column="2" ToolTip.Tip="Open Test Report Window" Command="{Binding OpenReportWindowCommand}" 
+                                                            <Button Grid.Column="3" ToolTip.Tip="Open Test Output Directory" Command="{Binding OpenTestOutputDirectoryCommand}" 
                                                                 HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Height="30">
                                                                 <Button.Content>
                                                                     <Viewbox>
-                                                                        <Image Source="/Assets/LauncherGUI/Icons/Report.png" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                                        <Image Source="/Assets/LauncherGUI/Icons/Directory.png" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                                                     </Viewbox>
                                                                 </Button.Content>
                                                             </Button>
+
                                                         </Grid>
                                                     </StackPanel>
                                                 </DataTemplate>

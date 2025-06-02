@@ -22,6 +22,7 @@ namespace QArantineLauncher.Code.Projects
         public string BuildOutputPath { get => pBuilder.BuildOutputPath; set { pBuilder.BuildOutputPath = value; } }
         public string PublishingOutputPath { get => pPublisher.PublishingOutputPath; set { pPublisher.PublishingOutputPath = value; } }
         public string AdditionalCopyFiles { get => pBuilder.AdditionalCopyFiles; set { pBuilder.AdditionalCopyFiles = value; pPublisher.AdditionalCopyFiles = value; } }
+        public string IgnoredCopyFiles { get => pBuilder.IgnoredCopyFiles; set { pBuilder.IgnoredCopyFiles = value; pPublisher.IgnoredCopyFiles = value; } }
         public string BuildExePath { get => _buildExePath; set { _buildExePath = value; pRunner.BuildExePath = value; } }
         public string PublishingExePath { get => _publishingExePath; set { _publishingExePath = value; pRunner.PublishingExePath = value; } }
         public string LastExecutionRootPath { get => pRunner.LastExecutionRootPath; set { pRunner.LastExecutionRootPath = value; } }
@@ -42,6 +43,7 @@ namespace QArantineLauncher.Code.Projects
         private bool _isCleaningEnabled;
         private bool _isBuildEnabled;
         private bool _isPublishingEnabled;
+        private bool _isTrimmingEnabled;
         private bool _isTestingEnabled;
         private bool _isRunExeOnProcessEndEnabled;
         private bool _isRunCmdEnabled;
@@ -49,6 +51,7 @@ namespace QArantineLauncher.Code.Projects
         public bool IsCleaningEnabled { get => _isCleaningEnabled; set { _isCleaningEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsBuildEnabled { get => _isBuildEnabled; set { _isBuildEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsPublishingEnabled { get => _isPublishingEnabled; set { _isPublishingEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
+        public bool IsTrimmingEnabled { get => _isTrimmingEnabled; set { _isTrimmingEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsTestingEnabled { get => _isTestingEnabled; set { _isTestingEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsRunExeOnProcessEndEnabled { get => _isRunExeOnProcessEndEnabled; set { _isRunExeOnProcessEndEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsRunCmdEnabled { get => _isRunCmdEnabled; set { _isRunCmdEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
@@ -68,6 +71,7 @@ namespace QArantineLauncher.Code.Projects
             string buildOutputPath = "",
             string publishingOutputPath = "",
             string additionalCopyFiles = "",
+            string ignoredCopyFiles = "",
             string runParams = "",
             string buildExePath = "",
             string publishingExePath = "",
@@ -77,6 +81,7 @@ namespace QArantineLauncher.Code.Projects
             bool isCleaningEnabled = true,
             bool isBuildEnabled = true,
             bool isPublishingEnabled = true,
+            bool isTrimmingEnabled = false,
             bool isTestingEnabled = true,
             bool isRunExeOnProcessEndEnabled = false,
             bool isRunCmdEnabled = false
@@ -93,11 +98,13 @@ namespace QArantineLauncher.Code.Projects
             _isCleaningEnabled = isCleaningEnabled;
             _isBuildEnabled = isBuildEnabled;
             _isPublishingEnabled = isPublishingEnabled;
+            _isTrimmingEnabled = isTrimmingEnabled;
             _isTestingEnabled = isTestingEnabled;
             _isRunExeOnProcessEndEnabled = isRunExeOnProcessEndEnabled;
             _isRunCmdEnabled = isRunCmdEnabled;
-            pCleaner = new(projectRootPath);pBuilder = new(projectRootPath, buildOutputPath, additionalCopyFiles);
-            pPublisher = new(projectRootPath, publishingOutputPath, additionalCopyFiles);
+            pCleaner = new(projectRootPath);
+            pBuilder = new(projectRootPath, buildOutputPath, additionalCopyFiles, ignoredCopyFiles);
+            pPublisher = new(projectRootPath, publishingOutputPath, additionalCopyFiles, ignoredCopyFiles);
             pRunner = new(buildExePath, publishingExePath, lastExecutionRootPath, runParams);
             pTester = new(this, projectRootPath, testsPath, testsOutputPath);
         }
@@ -122,7 +129,7 @@ namespace QArantineLauncher.Code.Projects
 
             if (IsPublishingEnabled && !_isProcessAborted)
             {
-                await pPublisher.StartPublishing();
+                await pPublisher.StartPublishing(_isTrimmingEnabled);
                 UpdatePublishingExePath();
             }
 

@@ -163,6 +163,19 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             }
         }
 
+        public bool IsTrimmingEnabled
+        {
+            get => CurrentProject != null && CurrentProject.IsTrimmingEnabled;
+            set
+            {
+                if (IsTrimmingEnabled != value)
+                {
+                    CurrentProject.IsTrimmingEnabled = value;
+                    RaisePropertyChanged(nameof(IsTrimmingEnabled));
+                }
+            }
+        }
+
         public bool IsTestingEnabled
         {
             get => CurrentProject != null && CurrentProject.IsTestingEnabled;
@@ -506,6 +519,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
                 RaisePropertyChanged(nameof(IsCleaningEnabled));
                 RaisePropertyChanged(nameof(IsBuildEnabled));
                 RaisePropertyChanged(nameof(IsPublishingEnabled));
+                RaisePropertyChanged(nameof(IsTrimmingEnabled));
                 RaisePropertyChanged(nameof(IsTestingEnabled));
 
                 RaisePropertyChanged(nameof(IsRunExeOnProcessEndEnabled));

@@ -2,6 +2,7 @@ using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 
+using QArantineLauncher.Code.JsonContexts;
 using QArantineLauncher.Code.LauncherGUI.Models;
 
 namespace QArantineLauncher.Code.LauncherGUI.Services
@@ -9,7 +10,6 @@ namespace QArantineLauncher.Code.LauncherGUI.Services
     public class WindowSettingsService
     {
         private const string SettingsFile = "LauncherData/Config/GUIWindowSettings.json";
-        private static readonly JsonSerializerOptions JSO = new() { WriteIndented = true };
 
         public static void LoadWindowSize(Window? window)
         {
@@ -18,7 +18,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Services
             if (File.Exists(SettingsFile))
             {
                 var json = File.ReadAllText(SettingsFile);
-                var settingsList = JsonSerializer.Deserialize<List<WindowSettings>>(json);
+                var settingsList = JsonSerializer.Deserialize(json, WindowSettingsJsonContext.Default.ListWindowSettings);
                 var settings = settingsList?.FirstOrDefault(s => s.WindowTitle == window.Title);
                 if (settings != null)
                 {
@@ -62,7 +62,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Services
             if (File.Exists(SettingsFile))
             {
                 var json = File.ReadAllText(SettingsFile);
-                settingsList = JsonSerializer.Deserialize<List<WindowSettings>>(json) ?? [];
+                settingsList = JsonSerializer.Deserialize(json, WindowSettingsJsonContext.Default.ListWindowSettings) ?? [];
             }
             else
             {
@@ -83,7 +83,7 @@ namespace QArantineLauncher.Code.LauncherGUI.Services
                 settingsList.Add(settings);
             }
 
-            var updatedJson = JsonSerializer.Serialize(settingsList, JSO);
+            var updatedJson = JsonSerializer.Serialize(settingsList, WindowSettingsJsonContext.Default.ListWindowSettings);
 
             string? directoryPath = Path.GetDirectoryName(SettingsFile);
             if (directoryPath != null) Directory.CreateDirectory(directoryPath);
