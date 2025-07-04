@@ -15,6 +15,7 @@ namespace QArantineLauncher.Code.LauncherGUI.StaticData
             {"Add", "/Assets/LauncherGUI/Icons/Add.png"},
             {"Delete", "/Assets/LauncherGUI/Icons/Delete.png"},
             {"Configuration", "/Assets/LauncherGUI/Icons/Configuration.png"},
+            {"Width", "/Assets/LauncherGUI/Icons/Width.png"},
 
             {"Log", "/Assets/LauncherGUI/Icons/Log.png"},
             {"Report", "/Assets/LauncherGUI/Icons/Report.png"},

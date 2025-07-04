@@ -46,7 +46,7 @@ namespace QArantineLauncher.Code.Projects
         private bool _isTrimmingEnabled;
         private bool _isTestingEnabled;
         private bool _isRunExeOnProcessEndEnabled;
-        private bool _isRunCmdEnabled;
+        private bool _isRunCmdOnExeEnabled;
 
         public bool IsCleaningEnabled { get => _isCleaningEnabled; set { _isCleaningEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsBuildEnabled { get => _isBuildEnabled; set { _isBuildEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
@@ -54,7 +54,7 @@ namespace QArantineLauncher.Code.Projects
         public bool IsTrimmingEnabled { get => _isTrimmingEnabled; set { _isTrimmingEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsTestingEnabled { get => _isTestingEnabled; set { _isTestingEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
         public bool IsRunExeOnProcessEndEnabled { get => _isRunExeOnProcessEndEnabled; set { _isRunExeOnProcessEndEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
-        public bool IsRunCmdEnabled { get => _isRunCmdEnabled; set { _isRunCmdEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
+        public bool IsRunCmdOnExeEnabled { get => _isRunCmdOnExeEnabled; set { _isRunCmdOnExeEnabled = value; ProjectManager.Instance.SaveExistentProjects(); } }
 
         [JsonIgnore]
         public bool IsProcessRunning
@@ -84,7 +84,7 @@ namespace QArantineLauncher.Code.Projects
             bool isTrimmingEnabled = false,
             bool isTestingEnabled = true,
             bool isRunExeOnProcessEndEnabled = false,
-            bool isRunCmdEnabled = false
+            bool isRunCmdOnExeEnabled = false
         )
         {
             Name = name;
@@ -101,7 +101,7 @@ namespace QArantineLauncher.Code.Projects
             _isTrimmingEnabled = isTrimmingEnabled;
             _isTestingEnabled = isTestingEnabled;
             _isRunExeOnProcessEndEnabled = isRunExeOnProcessEndEnabled;
-            _isRunCmdEnabled = isRunCmdEnabled;
+            _isRunCmdOnExeEnabled = isRunCmdOnExeEnabled;
             pCleaner = new(projectRootPath);
             pBuilder = new(projectRootPath, buildOutputPath, additionalCopyFiles, ignoredCopyFiles);
             pPublisher = new(projectRootPath, publishingOutputPath, additionalCopyFiles, ignoredCopyFiles);
@@ -134,7 +134,7 @@ namespace QArantineLauncher.Code.Projects
             }
 
             if (IsTestingEnabled && !_isProcessAborted)
-                await pTester.StartTesting(_isRunCmdEnabled);
+                await pTester.StartTesting(_isRunCmdOnExeEnabled);
 
             EndProcess();
         }
@@ -184,7 +184,7 @@ namespace QArantineLauncher.Code.Projects
         {
             if (IsRunExeOnProcessEndEnabled && LastExeType != ProjectRunner.ExeType.None)
             {
-                _ = pRunner.RunProgram(LastExeType, false, IsRunCmdEnabled);
+                _ = pRunner.RunProgram(LastExeType, false, IsRunCmdOnExeEnabled);
             }
         }
 

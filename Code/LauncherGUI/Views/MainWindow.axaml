@@ -55,6 +55,7 @@
                             <ColumnDefinition Width="*"/>       <!-- Align Left/Right separator -->   
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -93,29 +94,29 @@
                             HorizontalAlignment="Left" VerticalAlignment="Center" Width="NaN" Foreground="LightGray">
                         </ComboBox>
 
-                        <Button Grid.Column="4" ToolTip.Tip="Run Process" Command="{Binding RunOrAbortProcessCommand}" 
+                        <Button Grid.Column="4" ToolTip.Tip="Run Process" Command="{Binding IsProcessRunningToggle.ToggleCommand}" 
                             HorizontalAlignment="Left" VerticalAlignment="Center" Width="NaN">
                             <Button.Content>
                                 <Viewbox>
-                                    <Image Source="{Binding IsProcessRunningButtonIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                    <Image Source="{Binding IsProcessRunningToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                 </Viewbox>
                             </Button.Content>
                         </Button>
 
-                        <Button Grid.Column="5" ToolTip.Tip="Enable/Disable Run Exe On Process End" Command="{Binding ToggleRunExeOnProcessEndEnabledCommand}" 
+                        <Button Grid.Column="5" ToolTip.Tip="Enable/Disable Run Exe On Process End" Command="{Binding RunExeOnProcessEndToggle.ToggleCommand}" 
                             HorizontalAlignment="Left" VerticalAlignment="Center" Width="NaN">
                             <Button.Content>
                                 <Viewbox>
-                                    <Image Source="{Binding RunExeOnProcessEndIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                    <Image Source="{Binding RunExeOnProcessEndToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                 </Viewbox>
                             </Button.Content>
                         </Button>
 
-                        <Button Grid.Column="6" ToolTip.Tip="Enable/Disable Keeping CMD window alive" Command="{Binding ToggleRunCmdEnabledCommand}" 
+                        <Button Grid.Column="6" ToolTip.Tip="Enable/Disable Keeping CMD window alive" Command="{Binding RunCmdOnExeToggle.ToggleCommand}" 
                             HorizontalAlignment="Left" VerticalAlignment="Center" Width="NaN" Margin="25,5,5,5">
                             <Button.Content>
                                 <Viewbox>
-                                    <Image Source="{Binding RunCmdIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                    <Image Source="{Binding RunCmdOnExeToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                 </Viewbox>
                             </Button.Content>
                         </Button>
@@ -174,11 +175,19 @@
                             </Button.Content>
                         </Button>
 
-                        <ComboBox Grid.Column="14" x:Name="ProcessSelectionComboBox" ToolTip.Tip="Select Process" ItemsSource="{Binding CurrentProjectAliveProcesses}" SelectedItem="{Binding SelectedProcess}"
-                            HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Margin="25,5,5,5" Foreground="LightGray">
+                        <Button Grid.Column="14" ToolTip.Tip="Reset Panel Widths" Command="{Binding ResetColumnsCommand}" Margin="25,5,25,5">
+                            <Button.Content>
+                                <Viewbox>
+                                    <Image Source="/Assets/LauncherGUI/Icons/Width.png"/>
+                                </Viewbox>
+                            </Button.Content>
+                        </Button>
+
+                        <ComboBox Grid.Column="15" x:Name="ProcessSelectionComboBox" ToolTip.Tip="Select Process" ItemsSource="{Binding CurrentProjectAliveProcesses}" SelectedItem="{Binding SelectedProcess}"
+                            HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Margin="5,5,5,5" Foreground="LightGray">
                         </ComboBox>
 
-                        <Button Grid.Column="15" ToolTip.Tip="Kill Selected Process" Command="{Binding TerminateSelectedProcessCommand}" 
+                        <Button Grid.Column="16" ToolTip.Tip="Kill Selected Process" Command="{Binding TerminateSelectedProcessCommand}" 
                             HorizontalAlignment="Right" VerticalAlignment="Center" Width="NaN" Margin="5,5,10,5">
                             <Button.Content>
                                 <Viewbox>
@@ -196,13 +205,13 @@
                 <Border>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="{Binding CleaningColumnWidth}" MinWidth="200"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="{Binding BuildColumnWidth}" MinWidth="200"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="{Binding PublishingColumnWidth}" MinWidth="200"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="{Binding TestingColumnWidth}" MinWidth="200"/>
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -227,11 +236,11 @@
                                     <CheckBox Grid.Row="0" Grid.Column="0" Content="Clean" ToolTip.Tip="Enable/Disable Clean Step" IsChecked="{Binding IsCleaningEnabled}"
                                         HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                                    <Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Toggle Clean Auto Scroll" Command="{Binding ToggleCleaningAutoScrollCommand}" 
+                                    <Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Toggle Clean Auto Scroll" Command="{Binding CleaningAutoScrollToggle.ToggleCommand}" 
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Width="NaN">
                                         <Button.Content>
                                             <Viewbox>
-                                                <Image Source="{Binding CleaningAutoScrollButtonIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                <Image Source="{Binding CleaningAutoScrollToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                             </Viewbox>
                                         </Button.Content>
                                     </Button>
@@ -276,11 +285,11 @@
                                     <CheckBox Grid.Row="0" Grid.Column="0" Content="Build" ToolTip.Tip="Enable/Disable Build Step" IsChecked="{Binding IsBuildEnabled}"
                                         HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                                    <Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Toggle Build Auto Scroll" Command="{Binding ToggleBuildAutoScrollCommand}" 
+                                    <Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Toggle Build Auto Scroll" Command="{Binding BuildAutoScrollToggle.ToggleCommand}" 
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Width="NaN">
                                         <Button.Content>
                                             <Viewbox>
-                                                <Image Source="{Binding BuildAutoScrollButtonIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                <Image Source="{Binding BuildAutoScrollToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                             </Viewbox>
                                         </Button.Content>
                                     </Button>
@@ -329,11 +338,11 @@
                                     <CheckBox Grid.Row="0" Grid.Column="2" Content="Trimming" ToolTip.Tip="Enable/Disable Trimming" IsChecked="{Binding IsTrimmingEnabled}"
                                         HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-                                    <Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Toggle Publishing Auto Scroll" Command="{Binding TogglePublishingAutoScrollCommand}" 
+                                    <Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Toggle Publishing Auto Scroll" Command="{Binding PublishingAutoScrollToggle.ToggleCommand}" 
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Width="NaN">
                                         <Button.Content>
                                             <Viewbox>
-                                                <Image Source="{Binding PublishingAutoScrollButtonIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                <Image Source="{Binding PublishingAutoScrollToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                             </Viewbox>
                                         </Button.Content>
                                     </Button>
@@ -388,11 +397,11 @@
                                         </Button.Content>
                                     </Button>
 
-                                    <Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Toggle Testing Auto Scroll" Command="{Binding ToggleTestingAutoScrollCommand}" 
+                                    <Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Toggle Testing Auto Scroll" Command="{Binding TestingAutoScrollToggle.ToggleCommand}" 
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Width="NaN">
                                         <Button.Content>
                                             <Viewbox>
-                                                <Image Source="{Binding TestingAutoScrollButtonIcon, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
+                                                <Image Source="{Binding TestingAutoScrollToggle.CurrentIconPath, Converter={StaticResource ImagePathToBitmapConverter}}" RenderOptions.BitmapInterpolationMode="MediumQuality"/>
                                             </Viewbox>
                                         </Button.Content>
                                     </Button>

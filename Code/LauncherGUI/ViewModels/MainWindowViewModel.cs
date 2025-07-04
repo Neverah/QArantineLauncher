@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Controls;
-using System.Runtime.CompilerServices;
 
 using QArantineLauncher.Code.LauncherGUI.StaticData;
 using QArantineLauncher.Code.LauncherGUI.Models;
@@ -14,7 +15,8 @@ using QArantineLauncher.Code.LauncherGUI.Views;
 using QArantine.Code.Test;
 using QArantineLauncher.Code.Utils;
 using QArantineLauncher.Code.Projects.Running;
-using System.Diagnostics;
+using QArantineLauncher.Code.LauncherGUI.ViewModels.Commands;
+using QArantineLauncher.Code.LauncherGUI.ViewModels.Components;
 
 namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 {
@@ -27,21 +29,22 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
         public ICommand CreateNewProjectCommand { get; }
         public ICommand DeleteCurrentProjectCommand { get; }
         public ICommand ConfigureCurrentProjectCommand { get; }
-        public ICommand ToggleRunExeOnProcessEndEnabledCommand { get; }
-        public ICommand ToggleRunCmdEnabledCommand { get; }
         public ICommand OpenMainLogCommand { get; }
         public ICommand OpenRootDirectoryCommand { get; }
-        public ICommand ToggleCleaningAutoScrollCommand { get; }
-        public ICommand ToggleBuildAutoScrollCommand { get; }
-        public ICommand TogglePublishingAutoScrollCommand { get; }
-        public ICommand ToggleTestingAutoScrollCommand { get; }
         public ICommand ConfigureEnabledTestsCommand { get; }
-        public ICommand RunOrAbortProcessCommand { get; }
         public ICommand TerminateSelectedProcessCommand { get; }
         public ICommand LaunchLastBuildVersionCommand { get; }
         public ICommand OpenBuildOutputDirectoryCommand { get; }
         public ICommand LaunchLastPackedVersionCommand { get; }
         public ICommand OpenPackedOutputDirectoryCommand { get; }
+        public ICommand ResetColumnsCommand { get; }
+        public ToggleButtonViewModel CleaningAutoScrollToggle { get; }
+        public ToggleButtonViewModel BuildAutoScrollToggle { get; }
+        public ToggleButtonViewModel PublishingAutoScrollToggle { get; }
+        public ToggleButtonViewModel TestingAutoScrollToggle { get; }
+        public ToggleButtonViewModel IsProcessRunningToggle { get; }
+        public ToggleButtonViewModel RunExeOnProcessEndToggle { get; }
+        public ToggleButtonViewModel RunCmdOnExeToggle { get; }
         private Project? _currentProject;
         private ProcessInfo? _selectedProcess;
         private ObservableCollection<GUILogLine> _cleaningLogLines;
@@ -52,17 +55,11 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
         private ScrollViewer? _buildLogScrollViewer;
         private ScrollViewer? _publishingLogScrollViewer;
         private ScrollViewer? _testingResultsScrollViewer;
-        private bool _isCleaningAutoScrollEnabled = true;
-        private bool _isBuildAutoScrollEnabled = true;
-        private bool _isPublishingAutoScrollEnabled = true;
-        private bool _isTestingAutoScrollEnabled = true;
-        private string _runExeOnProcessEndIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _runCmdIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _cleaningAutoScrollButtonIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _buildAutoScrollButtonIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _publishingAutoScrollButtonIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _testingAutoScrollButtonIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
-        private string _isProcessRunningButtonIcon = IconsDictionary.LauncherIconsDictionary["No_Image"];
+        private GridLength _cleaningColumnWidth = new(1, GridUnitType.Star);
+        private GridLength _buildColumnWidth = new(1, GridUnitType.Star);
+        private GridLength _publishingColumnWidth = new(1, GridUnitType.Star);
+        private GridLength _testingColumnWidth = new(1, GridUnitType.Star);
+
 
         public static ObservableCollection<Project> ExistentProjects
         {
@@ -93,34 +90,6 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             {
                 _selectedProcess = value;
                 RaisePropertyChanged(nameof(SelectedProcess));
-            }
-        }
-
-        public bool IsRunExeOnProcessEndEnabled
-        {
-            get => CurrentProject.IsRunExeOnProcessEndEnabled;
-            set
-            {
-                if (IsRunExeOnProcessEndEnabled != value)
-                {
-                    CurrentProject.IsRunExeOnProcessEndEnabled = value;
-                    RaisePropertyChanged(nameof(IsRunExeOnProcessEndEnabled));
-                    UpdateRunExeOnProcessEndEnabledIcon();
-                }
-            }
-        }
-
-        public bool IsRunCmdEnabled
-        {
-            get => CurrentProject.IsRunCmdEnabled;
-            set
-            {
-                if (IsRunCmdEnabled != value)
-                {
-                    CurrentProject.IsRunCmdEnabled = value;
-                    RaisePropertyChanged(nameof(IsRunCmdEnabled));
-                    UpdateRunCmdEnabledIcon();
-                }
             }
         }
 
@@ -189,170 +158,6 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             }
         }
 
-        public bool IsCleaningAutoScrollEnabled
-        {
-            get => _isCleaningAutoScrollEnabled;
-            set
-            {
-                if (_isCleaningAutoScrollEnabled != value)
-                {
-                    _isCleaningAutoScrollEnabled = value;
-                    RaisePropertyChanged(nameof(IsCleaningAutoScrollEnabled));
-                    CleaningAutoScrollButtonIcon = IsCleaningAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-                    if (_isCleaningAutoScrollEnabled)
-                    {
-                        ScrollCleaningLogToBottom();
-                    }
-                }
-            }
-        }
-
-        public bool IsBuildAutoScrollEnabled
-        {
-            get => _isBuildAutoScrollEnabled;
-            set
-            {
-                if (_isBuildAutoScrollEnabled != value)
-                {
-                    _isBuildAutoScrollEnabled = value;
-                    RaisePropertyChanged(nameof(IsBuildAutoScrollEnabled));
-                    BuildAutoScrollButtonIcon = IsBuildAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-                    if (_isBuildAutoScrollEnabled)
-                    {
-                        ScrollBuildLogToBottom();
-                    }
-                }
-            }
-        }
-
-        public bool IsPublishingAutoScrollEnabled
-        {
-            get => _isPublishingAutoScrollEnabled;
-            set
-            {
-                if (_isPublishingAutoScrollEnabled != value)
-                {
-                    _isPublishingAutoScrollEnabled = value;
-                    RaisePropertyChanged(nameof(IsPublishingAutoScrollEnabled));
-                    PublishingAutoScrollButtonIcon = IsPublishingAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-                    if (_isPublishingAutoScrollEnabled)
-                    {
-                        ScrollPublishingLogToBottom();
-                    }
-                }
-            }
-        }
-
-        public bool IsTestingAutoScrollEnabled
-        {
-            get => _isTestingAutoScrollEnabled;
-            set
-            {
-                if (_isTestingAutoScrollEnabled != value)
-                {
-                    _isTestingAutoScrollEnabled = value;
-                    RaisePropertyChanged(nameof(IsTestingAutoScrollEnabled));
-                    TestingAutoScrollButtonIcon = IsTestingAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-                    if (_isTestingAutoScrollEnabled)
-                    {
-                        ScrollTestingResultsListToBottom();
-                    }
-                }
-            }
-        }
-
-        public bool IsProcessRunning
-        {
-            get =>  CurrentProject != null && CurrentProject.IsProcessRunning;
-            set
-            {
-                if (IsProcessRunning != value)
-                {
-                    if (IsProcessRunning)
-                    {
-                        CurrentProject.AbortProcess();
-                    }
-                    else
-                    {
-                        CurrentProject.StartProcess();
-                    }
-                    
-                    RaisePropertyChanged(nameof(IsProcessRunning));
-                    UpdateProcessRunningIcon();
-                }
-            }
-        }
-
-        public string RunExeOnProcessEndIcon
-        {
-            get => _runExeOnProcessEndIcon;
-            set
-            {
-                _runExeOnProcessEndIcon = value;
-                RaisePropertyChanged(nameof(RunExeOnProcessEndIcon));
-            }
-        }
-
-        public string RunCmdIcon
-        {
-            get => _runCmdIcon;
-            set
-            {
-                _runCmdIcon = value;
-                RaisePropertyChanged(nameof(RunCmdIcon));
-            }
-        }
-
-        public string CleaningAutoScrollButtonIcon
-        {
-            get => _cleaningAutoScrollButtonIcon;
-            set
-            {
-                _cleaningAutoScrollButtonIcon = value;
-                RaisePropertyChanged(nameof(CleaningAutoScrollButtonIcon));
-            }
-        }
-
-        public string BuildAutoScrollButtonIcon
-        {
-            get => _buildAutoScrollButtonIcon;
-            set
-            {
-                _buildAutoScrollButtonIcon = value;
-                RaisePropertyChanged(nameof(BuildAutoScrollButtonIcon));
-            }
-        }
-
-        public string PublishingAutoScrollButtonIcon
-        {
-            get => _publishingAutoScrollButtonIcon;
-            set
-            {
-                _publishingAutoScrollButtonIcon = value;
-                RaisePropertyChanged(nameof(PublishingAutoScrollButtonIcon));
-            }
-        }
-
-        public string TestingAutoScrollButtonIcon
-        {
-            get => _testingAutoScrollButtonIcon;
-            set
-            {
-                _testingAutoScrollButtonIcon = value;
-                RaisePropertyChanged(nameof(TestingAutoScrollButtonIcon));
-            }
-        }
-
-        public string IsProcessRunningButtonIcon
-        {
-            get => _isProcessRunningButtonIcon;
-            set
-            {
-                _isProcessRunningButtonIcon = value;
-                RaisePropertyChanged(nameof(IsProcessRunningButtonIcon));
-            }
-        }
-
         public ObservableCollection<GUILogLine> CleaningLogLines
         {
             get => _cleaningLogLines;
@@ -392,6 +197,27 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
                 RaisePropertyChanged(nameof(TestingResultsData));
             }
         }
+        
+        public GridLength CleaningColumnWidth
+        {
+            get => _cleaningColumnWidth;
+            set { _cleaningColumnWidth = value; RaisePropertyChanged(); }
+        }
+        public GridLength BuildColumnWidth
+        {
+            get => _buildColumnWidth;
+            set { _buildColumnWidth = value; RaisePropertyChanged(); }
+        }
+        public GridLength PublishingColumnWidth
+        {
+            get => _publishingColumnWidth;
+            set { _publishingColumnWidth = value; RaisePropertyChanged(); }
+        }
+        public GridLength TestingColumnWidth
+        {
+            get => _testingColumnWidth;
+            set { _testingColumnWidth = value; RaisePropertyChanged(); }
+        }
 
         public MainWindowViewModel()
         {
@@ -402,38 +228,41 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
             SetNewSelectedProject(ProjectManager.Instance.ExistentProjects.First());
 
-            UpdateRunExeOnProcessEndEnabledIcon();
-            UpdateRunCmdEnabledIcon();
-            CleaningAutoScrollButtonIcon = IsCleaningAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-            BuildAutoScrollButtonIcon = IsBuildAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-            PublishingAutoScrollButtonIcon = IsPublishingAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-            TestingAutoScrollButtonIcon = IsTestingAutoScrollEnabled ? IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"] : IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"];
-            IsProcessRunningButtonIcon = IsProcessRunning ? IconsDictionary.LauncherIconsDictionary["Stop"] : IconsDictionary.LauncherIconsDictionary["Start"];
-
             CreateNewProjectCommand = new RelayCommand(CreateNewProject);
             DeleteCurrentProjectCommand = new RelayCommand(DeleteCurrentProject);
             ConfigureCurrentProjectCommand = new RelayCommand(ConfigureCurrentProject);
-            
-            RunOrAbortProcessCommand = new RelayCommand(RunOrAbortProcess);
-            TerminateSelectedProcessCommand = new RelayCommand(TerminateSelectedProcess);
 
-            ToggleRunExeOnProcessEndEnabledCommand = new RelayCommand(ToggleRunExeOnProcessEndEnabled);
-            ToggleRunCmdEnabledCommand = new RelayCommand(ToggleRunCmdEnabled);
+            TerminateSelectedProcessCommand = new RelayCommand(TerminateSelectedProcess);
 
             OpenMainLogCommand = new RelayCommand(OpenMainLog);
             OpenRootDirectoryCommand = new RelayCommand(OpenRootDirectory);
-            
+
             LaunchLastBuildVersionCommand = new RelayCommand(LaunchLastBuildVersion);
             OpenBuildOutputDirectoryCommand = new RelayCommand(OpenBuildOutputDirectory);
 
             LaunchLastPackedVersionCommand = new RelayCommand(LaunchLastPackedVersion);
             OpenPackedOutputDirectoryCommand = new RelayCommand(OpenPackedOutputDirectory);
-            
 
-            ToggleCleaningAutoScrollCommand = new RelayCommand(ToggleCleaningAutoScroll);
-            ToggleBuildAutoScrollCommand = new RelayCommand(ToggleBuildAutoScroll);
-            TogglePublishingAutoScrollCommand = new RelayCommand(TogglePublishingAutoScroll);
-            ToggleTestingAutoScrollCommand = new RelayCommand(ToggleTestingAutoScroll);
+            ResetColumnsCommand = new RelayCommand(ResetColumns);
+
+            IsProcessRunningToggle = new(IconsDictionary.LauncherIconsDictionary["Stop"], IconsDictionary.LauncherIconsDictionary["Start"],
+                IsCurrentProcessRunning, StartOrAbortProcess);
+            RunExeOnProcessEndToggle = new(IconsDictionary.LauncherIconsDictionary["LaunchGame_Enabled"], IconsDictionary.LauncherIconsDictionary["LaunchGame_Disabled"],
+                () => { return CurrentProject.IsRunExeOnProcessEndEnabled; }, (value) => CurrentProject.IsRunExeOnProcessEndEnabled = value);
+            RunCmdOnExeToggle = new(IconsDictionary.LauncherIconsDictionary["Cmd_Enabled"], IconsDictionary.LauncherIconsDictionary["Cmd_Disabled"],
+                () => { return CurrentProject.IsRunCmdOnExeEnabled; }, (value) => CurrentProject.IsRunCmdOnExeEnabled = value);
+
+            CleaningAutoScrollToggle = new(IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"], IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"], true,
+                (isToggled) => { if (isToggled) ScrollCleaningLogToBottom(); });
+
+            BuildAutoScrollToggle = new(IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"], IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"], true,
+                (isToggled) => { if (isToggled) ScrollBuildLogToBottom(); });
+
+            PublishingAutoScrollToggle = new(IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"], IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"], true,
+                (isToggled) => { if (isToggled) ScrollPublishingLogToBottom(); });
+
+            TestingAutoScrollToggle = new(IconsDictionary.LauncherIconsDictionary["AutoScroll_Enabled"], IconsDictionary.LauncherIconsDictionary["AutoScroll_Disabled"], true,
+                (isToggled) => { if (isToggled) ScrollTestingResultsListToBottom(); });
 
             ConfigureEnabledTestsCommand = new RelayCommand(ConfigureEnabledTests);
         }
@@ -522,11 +351,9 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
                 RaisePropertyChanged(nameof(IsTrimmingEnabled));
                 RaisePropertyChanged(nameof(IsTestingEnabled));
 
-                RaisePropertyChanged(nameof(IsRunExeOnProcessEndEnabled));
-                RaisePropertyChanged(nameof(IsRunCmdEnabled));
-
-                UpdateRunExeOnProcessEndEnabledIcon();
-                UpdateRunCmdEnabledIcon();
+                RunExeOnProcessEndToggle?.RefreshIconPath();
+                RunCmdOnExeToggle?.RefreshIconPath();
+                IsProcessRunningToggle?.RefreshIconPath();
 
                 RaisePropertyChanged(nameof(CurrentProject));
             }
@@ -630,40 +457,10 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             }
         }
 
-        private void ToggleRunExeOnProcessEndEnabled()
-        {
-            IsRunExeOnProcessEndEnabled = !IsRunExeOnProcessEndEnabled;
-        }
-
-        private void ToggleRunCmdEnabled()
-        {
-            IsRunCmdEnabled = !IsRunCmdEnabled;
-        }
-
         private async void OpenMainLog()
         {
             string logFilePath = Path.Combine(CurrentProject.LastExecutionRootPath, "Log.html");
             if (!FileUtils.OpenFile(logFilePath)) await MessageBox.Show($"The file '{logFilePath}' doesn't exist", LogManager.LogLevel.Error);
-        }
-
-        private void ToggleCleaningAutoScroll()
-        {
-            IsCleaningAutoScrollEnabled = !IsCleaningAutoScrollEnabled;
-        }
-
-        private void ToggleBuildAutoScroll()
-        {
-            IsBuildAutoScrollEnabled = !IsBuildAutoScrollEnabled;
-        }
-
-        private void TogglePublishingAutoScroll()
-        {
-            IsPublishingAutoScrollEnabled = !IsPublishingAutoScrollEnabled;
-        }
-
-        private void ToggleTestingAutoScroll()
-        {
-            IsTestingAutoScrollEnabled = !IsTestingAutoScrollEnabled;
         }
 
         private void ConfigureEnabledTests()
@@ -680,11 +477,6 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             }
         }
 
-        private void RunOrAbortProcess()
-        {
-            IsProcessRunning = !IsProcessRunning;
-        }
-
         private void TerminateSelectedProcess()
         {
             if (SelectedProcess != null)
@@ -695,24 +487,29 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
             }
         }
 
-        private void UpdateProcessRunningIcon()
+        private bool IsCurrentProcessRunning()
         {
-            IsProcessRunningButtonIcon = IsProcessRunning ? IconsDictionary.LauncherIconsDictionary["Stop"] : IconsDictionary.LauncherIconsDictionary["Start"];
+            return CurrentProject != null && CurrentProject.IsProcessRunning;
         }
 
-        private void UpdateRunExeOnProcessEndEnabledIcon()
+        private void StartOrAbortProcess(bool value)
         {
-            RunExeOnProcessEndIcon = CurrentProject.IsRunExeOnProcessEndEnabled ? IconsDictionary.LauncherIconsDictionary["LaunchGame_Enabled"] : IconsDictionary.LauncherIconsDictionary["LaunchGame_Disabled"];
-        }
-
-        private void UpdateRunCmdEnabledIcon()
-        {
-            RunCmdIcon = IsRunCmdEnabled ? IconsDictionary.LauncherIconsDictionary["Cmd_Enabled"] : IconsDictionary.LauncherIconsDictionary["Cmd_Disabled"];
+            if (IsProcessRunningToggle.IsToggled != value)
+            {
+                if (IsCurrentProcessRunning())
+                {
+                    CurrentProject.AbortProcess();
+                }
+                else
+                {
+                    CurrentProject.StartProcess();
+                }
+            }
         }
 
         public void Project_ProcessStateUpdated(object? sender, EventArgs e)
         {
-            UpdateProcessRunningIcon();
+            IsProcessRunningToggle.RefreshIconPath();
         }
 
         private void OpenRootDirectory()
@@ -722,7 +519,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
         private void LaunchLastBuildVersion()
         {
-            _ = CurrentProject.pRunner.RunProgram(Projects.Running.ProjectRunner.ExeType.Build, false, IsRunCmdEnabled);
+            _ = CurrentProject.pRunner.RunProgram(ProjectRunner.ExeType.Build, false, CurrentProject.IsRunCmdOnExeEnabled);
         }
 
         private void OpenBuildOutputDirectory()
@@ -732,17 +529,32 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
         private void LaunchLastPackedVersion()
         {
-            _ = CurrentProject.pRunner.RunProgram(Projects.Running.ProjectRunner.ExeType.Publish, false, IsRunCmdEnabled);
+            _ = CurrentProject.pRunner.RunProgram(ProjectRunner.ExeType.Publish, false, CurrentProject.IsRunCmdOnExeEnabled);
         }
 
         private void OpenPackedOutputDirectory()
         {
             FileUtils.OpenDirectory(CurrentProject.PublishingOutputPath);
         }
+        private void ResetColumns()
+        {
+            CleaningColumnWidth = new GridLength(3000, GridUnitType.Pixel);
+            BuildColumnWidth = new GridLength(3000, GridUnitType.Pixel);
+            PublishingColumnWidth = new GridLength(3000, GridUnitType.Pixel);
+            TestingColumnWidth = new GridLength(3000, GridUnitType.Pixel);
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                CleaningColumnWidth = new GridLength(1, GridUnitType.Star);
+                BuildColumnWidth = new GridLength(1, GridUnitType.Star);
+                PublishingColumnWidth = new GridLength(1, GridUnitType.Star);
+                TestingColumnWidth = new GridLength(1, GridUnitType.Star);
+            }, DispatcherPriority.Background);
+        }
 
         private void ScrollCleaningLogToBottom()
         {
-            if (_isCleaningAutoScrollEnabled && _cleaningLogScrollViewer != null)
+            if (CleaningAutoScrollToggle.IsToggled && _cleaningLogScrollViewer != null)
             {
                 _cleaningLogScrollViewer.Offset = new Vector(_cleaningLogScrollViewer.Offset.X, _cleaningLogScrollViewer.Extent.Height);
             }
@@ -755,7 +567,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
         private void ScrollBuildLogToBottom()
         {
-            if (_isBuildAutoScrollEnabled && _buildLogScrollViewer != null)
+            if (BuildAutoScrollToggle.IsToggled && _buildLogScrollViewer != null)
             {
                 _buildLogScrollViewer.Offset = new Vector(_buildLogScrollViewer.Offset.X, _buildLogScrollViewer.Extent.Height);
             }
@@ -768,7 +580,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
         private void ScrollPublishingLogToBottom()
         {
-            if (_isPublishingAutoScrollEnabled && _publishingLogScrollViewer != null)
+            if (PublishingAutoScrollToggle.IsToggled && _publishingLogScrollViewer != null)
             {
                 _publishingLogScrollViewer.Offset = new Vector(_publishingLogScrollViewer.Offset.X, _publishingLogScrollViewer.Extent.Height);
             }
@@ -776,7 +588,7 @@ namespace QArantineLauncher.Code.LauncherGUI.ViewModels
 
         private void ScrollTestingResultsListToBottom()
         {
-            if (_isTestingAutoScrollEnabled && _testingResultsScrollViewer != null)
+            if (TestingAutoScrollToggle.IsToggled && _testingResultsScrollViewer != null)
             {
                 _testingResultsScrollViewer.Offset = new Vector(_testingResultsScrollViewer.Offset.X, _testingResultsScrollViewer.Extent.Height);
             }

@@ -9,6 +9,7 @@ using QArantine.Code.Test;
 using QArantine.Code.FrameworkModules.Logs;
 
 using QArantineLauncher.Code.LauncherGUI.ViewModels;
+using QArantineLauncher.Code.LauncherGUI.ViewModels.Commands;
 using QArantineLauncher.Code.LauncherGUI.Views;
 using QArantineLauncher.Code.Utils;
 
