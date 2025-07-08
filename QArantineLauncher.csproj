@@ -8,7 +8,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>Code/app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <ApplicationIcon>Assets/LauncherGUI/Icons/qarantine.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/LauncherGUI/Icons/QArantineLauncher.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

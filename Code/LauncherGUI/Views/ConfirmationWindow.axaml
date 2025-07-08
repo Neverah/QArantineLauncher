@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="QArantineLauncher.Code.LauncherGUI.Views.ConfirmationWindow"
-        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Icon="/Assets/LauncherGUI/Icons/QArantineLauncher.ico"
         Title="ConfirmationWindow" Width="400" Height="150">
 
     <Window.Background>

@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
         x:Class="QArantineLauncher.Code.LauncherGUI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Icon="/Assets/LauncherGUI/Icons/QArantineLauncher.ico"
         Title="QArantineLauncher">
 
     <Design.DataContext>

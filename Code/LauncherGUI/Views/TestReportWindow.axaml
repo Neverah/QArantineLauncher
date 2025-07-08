@@ -6,7 +6,7 @@
         xmlns:models="clr-namespace:QArantineLauncher.Code.LauncherGUI.Models"
         x:Class="QArantineLauncher.Code.LauncherGUI.Views.TestReportWindow"
         x:DataType="vm:TestReportWindowViewModel"
-        Icon="/Assets/LauncherGUI/Icons/qarantine.ico"
+        Icon="/Assets/LauncherGUI/Icons/QArantineLauncher.ico"
         Title="TestReport" Width="750" Height="725">
 
     <Window.Background>

@@ -6,9 +6,10 @@ namespace QArantineLauncher.Code.LauncherGUI.StaticData
         {
             {"No_Image", "/Assets/LauncherGUI/Icons/No_Image.png"},
 
-            {"QArantineLogo", "/Assets/LauncherGUI/Icons/qarantine.ico"},
+            {"QArantineLogo", "/Assets/LauncherGUI/Icons/QArantine.ico"},
+            {"QArantineLauncherLogo", "/Assets/LauncherGUI/Icons/QArantineLauncher.ico"},
 
-            {"Clear", "/Assets/LauncherGUI/Icons/Clear.png"},
+            { "Clear", "/Assets/LauncherGUI/Icons/Clear.png"},
             {"Start", "/Assets/LauncherGUI/Icons/Start.png"},
             {"Pause", "/Assets/LauncherGUI/Icons/Pause.png"},
             {"Stop", "/Assets/LauncherGUI/Icons/Stop.png"},
